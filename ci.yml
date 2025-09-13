@@ -1,0 +1,53 @@
+name: CI (lint, labels, semantic-PR)
+
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, edited]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pull-requests: write
+  statuses: write
+
+jobs:
+  labeler:
+    name: Auto-label PR
+    runs-on: ubuntu-latest
+    steps:
+      - name: Apply labels from changed paths
+        uses: actions/labeler@v5
+        with:
+          repo-token: ${{ secrets.GITHUB_TOKEN }}
+
+  semantic-pr:
+    name: PR title follows Conventional Commits
+    runs-on: ubuntu-latest
+    steps:
+      - uses: amannn/action-semantic-pull-request@v5
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    # This job exposes a status check called "semantic-pr"
+    # Add it to required status checks in branch protection.
+
+  lint:
+    name: Lint (markdown,yaml,actions) via Super-Linter
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Super-Linter
+        uses: super-linter/super-linter/slim@v6
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          # Only run a subset by default to be language-agnostic
+          VALIDATE_ALL_CODEBASE: true
+          VALIDATE_JAVASCRIPT_ES: false
+          VALIDATE_PYTHON: false
+          VALIDATE_GO: false
+          VALIDATE_RUBY: false
+          VALIDATE_DOCKERFILE_HADOLINT: false
+          VALIDATE_TERRAFORM: false
+          # Enable generally safe linters
+          VALIDATE_MARKDOWN: true
+          VALIDATE_YAML: true
+          VALIDATE_GITHUB_ACTIONS: true

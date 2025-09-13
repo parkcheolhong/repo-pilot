@@ -1,0 +1,17 @@
+documentation:
+  - changed-files:
+      - any-glob-to-any-file: ["docs/**", "**/*.md"]
+
+ci:
+  - changed-files:
+      - any-glob-to-any-file: [".github/**"]
+
+dependencies:
+  - changed-files:
+      - any-glob-to-any-file: ["**/package.json", "**/requirements.txt", ".github/dependabot.yml"]
+
+enhancement:
+  - head-branch: ["^feat/.*", "^feature/.*"]
+
+bug:
+  - head-branch: ["^fix/.*", "^bugfix/.*"]
