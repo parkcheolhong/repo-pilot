@@ -1,3 +1,5 @@
 # CODEOWNERS
 # Replace with your actual owners (GitHub usernames or teams)
 *   @parkcheolhong
+gh api repos/parkcheolhong/repo-pilot/invitations \
+  --jq '.[].{id:.id,invitee:.invitee.login,permission:.permissions,created:.created_at}'
